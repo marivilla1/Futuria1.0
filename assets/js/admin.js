@@ -34,15 +34,81 @@
       tr.appendChild(acc); tb.appendChild(tr);
     });
   }
+  function pintarFotos(p) {
+    const caja = $('pFotos');
+    const lista = $('pFotosLista');
+    lista.textContent = '';
+    if (!p || !Number(p.id)) { caja.hidden = true; return; }
+    caja.hidden = false;
+
+    for (let posicion = 1; posicion <= 4; posicion++) {
+      const tarjeta = document.createElement('div');
+      tarjeta.className = 'adm__foto';
+      const ruta = (p.imagenes || [])[posicion - 1];
+      if (ruta) {
+        const img = document.createElement('img');
+        img.src = ruta;
+        img.alt = 'Foto ' + posicion + ' de ' + p.nombre;
+        tarjeta.appendChild(img);
+      } else {
+        const vacia = document.createElement('div');
+        vacia.className = 'adm__foto-vacia';
+        vacia.textContent = 'Sin foto';
+        tarjeta.appendChild(vacia);
+      }
+
+      const titulo = document.createElement('strong');
+      titulo.textContent = 'Foto ' + posicion;
+      tarjeta.appendChild(titulo);
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/jpeg,image/png,image/webp';
+      input.setAttribute('aria-label', 'Cambiar foto ' + posicion);
+      input.addEventListener('change', async () => {
+        const archivo = input.files && input.files[0];
+        if (!archivo) return;
+        if (archivo.size > 5 * 1024 * 1024) {
+          aviso('La foto debe pesar máximo 5 MB.', true);
+          input.value = '';
+          return;
+        }
+        const datos = new FormData();
+        datos.append('accion', 'subir_imagen');
+        datos.append('id', String(p.id));
+        datos.append('posicion', String(posicion));
+        datos.append('imagen', archivo);
+        input.disabled = true;
+        try {
+          const respuesta = await fetch(PROD, { method: 'POST', body: datos });
+          const resultado = await respuesta.json();
+          if (!resultado.ok) throw new Error(resultado.error || 'No se pudo subir la foto.');
+          const actualizado = resultado.productos.find((producto) => Number(producto.id) === Number(p.id));
+          pintarProductos(resultado.productos);
+          if (actualizado) editar(actualizado);
+          aviso('Foto actualizada.');
+        } catch (error) {
+          aviso(error.message, true);
+        } finally {
+          input.disabled = false;
+          input.value = '';
+        }
+      });
+      tarjeta.appendChild(input);
+      lista.appendChild(tarjeta);
+    }
+  }
+
   function editar(p) {
     $('pId').value = p.id; $('pNombre').value = p.nombre; $('pTipo').value = p.tipo;
     $('pDesc').value = p.descripcion; $('pPrecio').value = p.precio_valor;
     $('pGuardar').textContent = 'Guardar cambios'; $('pCancelar').hidden = false;
+    pintarFotos(p);
     $('pNombre').focus();
   }
   function limpiar() {
     $('formProd').reset(); $('pId').value = '';
     $('pGuardar').textContent = 'Crear producto'; $('pCancelar').hidden = true;
+    $('pFotos').hidden = true; $('pFotosLista').textContent = '';
   }
   $('pCancelar').addEventListener('click', limpiar);
   $('formProd').addEventListener('submit', async (e) => {
