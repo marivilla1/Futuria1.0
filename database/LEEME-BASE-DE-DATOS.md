@@ -24,4 +24,4 @@ El dump incluye contenido inicial para equipo, productos, preguntas, tareas y he
 
 ## Compatibilidad con la aplicación
 
-El dump usa los nombres que consulta el proyecto (`integrantes_equipo`, `productos.id_integrante_creador`) y codificación `utf8mb4). También incluye el método `Agenda`, que utiliza `api/agenda.php` para clasificar las tareas.
+El dump usa los nombres que consulta el proyecto (`integrantes_equipo`, `productos.id_integrante_creador`) y codificación `utf8mb4`. También incluye el método `Agenda`, que utiliza `api/agenda.php` para clasificar las tareas.
