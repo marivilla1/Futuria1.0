@@ -1,6 +1,6 @@
 # Futuria 1.0 — Base de datos
 
-El archivo [futuria1_0.sql](futuria1_0.sql) contiene el esquema y los datos iniciales compatibles con la aplicación PHP.
+El archivo [futuria1_0.sql](futuria1_0.sql) contiene el esquema y los datos iniciales compatibles con la aplicación PHP. Impórtalo una sola vez en una base de datos nueva y vacía.
 
 ## Importar con XAMPP
 
