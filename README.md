@@ -13,7 +13,7 @@ Sitio de organización escolar y orientación vocacional con frontend HTML/CSS/J
 ## Publicar con InfinityFree
 
 1. Sube el contenido del proyecto al directorio `htdocs` del sitio.
-2. Crea una base desde **MySQL Databases** e importa `database/futuria1_0.sql) en esa base.
+2. Crea una base desde **MySQL Databases** e importa `database/futuria1_0.sql` en esa base.
 3. Crea `api/inc/config.php) a partir del ejemplo y reemplaza host, nombre de base, usuario y contraseña por los valores del panel. El puerto es `3306`.
 4. No subas `api/inc/config.php` a GitHub: está ignorado por Git para proteger la contraseña.
 
