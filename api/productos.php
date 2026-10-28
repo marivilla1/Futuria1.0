@@ -51,6 +51,7 @@ function lista_productos(): array
     $productos = [];
     foreach ($filas as $f) {
         $extra  = datos_extra_producto((int)$f['id_producto']);
+        $imagenes = imagenes_producto((int)$f['id_producto'], $extra['imagenes']);
         $precio = (int)round((float)$f['precio']);
         $productos[] = [
             'id'              => (int)$f['id_producto'],
@@ -61,10 +62,62 @@ function lista_productos(): array
             'caracteristicas' => $extra['caracteristicas'],
             'precio'          => formato_precio($precio),
             'precio_valor'    => $precio,
-            'imagenes'        => array_map(fn($img) => '../assets/img/' . $img, $extra['imagenes']),
+            'imagenes'        => $imagenes,
         ];
     }
     return $productos;
+}
+
+/**
+ *
+ * las imágenes personalizadas se guardan en assets/img con un nombre seguro
+ * por producto y posición. Si no hay una imagen subida, se usa la foto original
+ *
+ */
+function imagenes_producto(int $id, array $originales): array
+{
+    $directorio = dirname(__DIR__) . '/assets/img';
+    $extensiones = ['jpg', 'png', 'webp'];
+    $imagenes = [];
+
+    for ($posicion = 1; $posicion <= 4; $posicion++) {
+        $archivo = null;
+        foreach ($extensiones as $extension) {
+            $candidato = 'producto-' . $id . '-' . $posicion . '.' . $extension;
+            if (is_file($directorio . '/' . $candidato)) {
+                $archivo = $candidato;
+                break;
+            }
+        }
+        if ($archivo === null) {
+            $archivo = $originales[$posicion - 1] ?? null;
+        }
+        if ($archivo !== null) {
+            $ruta = '../assets/img/' . $archivo;
+            $fecha = @filemtime($directorio . '/' . $archivo);
+            $imagenes[] = $fecha ? $ruta . '?v=' . $fecha : $ruta;
+        }
+    }
+    return $imagenes;
+}
+
+/**
+ *
+ * elimina solo las imágenes cargadas por el panel para un producto
+ *
+ */
+function eliminar_imagenes_producto(int $id): void
+{
+    $directorio = dirname(__DIR__) . '/assets/img';
+    foreach (['jpg', 'png', 'webp'] as $extension) {
+        $archivo = $directorio . '/producto-' . $id . '-';
+        for ($posicion = 1; $posicion <= 4; $posicion++) {
+            $ruta = $archivo . $posicion . '.' . $extension;
+            if (is_file($ruta)) {
+                @unlink($ruta);
+            }
+        }
+    }
 }
 
 /**
@@ -99,7 +152,53 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 requerir_admin();
 
 $entrada = entrada_json();
-$accion  = (string)($entrada['accion'] ?? '');
+$accion  = isset($_POST['accion']) ? (string)$_POST['accion'] : (string)($entrada['accion'] ?? '');
+
+if ($accion === 'subir_imagen') {
+    $id = (int)($_POST['id'] ?? 0);
+    $posicion = (int)($_POST['posicion'] ?? 0);
+    if ($id < 1 || $posicion < 1 || $posicion > 4) {
+        responder(['ok' => false, 'error' => 'El producto o la posición de la foto no son válidos.'], 422);
+    }
+    $existe = bd()->prepare('SELECT 1 FROM productos WHERE id_producto = ?');
+    $existe->execute([$id]);
+    if (!$existe->fetchColumn()) {
+        responder(['ok' => false, 'error' => 'Ese producto no existe.'], 404);
+    }
+    if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
+        responder(['ok' => false, 'error' => 'No se pudo recibir la foto. Intenta subirla de nuevo.'], 422);
+    }
+    $foto = $_FILES['imagen'];
+    if ((int)$foto['size'] > 5 * 1024 * 1024) {
+        responder(['ok' => false, 'error' => 'La foto debe pesar máximo 5 MB.'], 422);
+    }
+    $informacion = @getimagesize($foto['tmp_name']);
+    $tipos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+    $mime = $informacion['mime'] ?? '';
+    if (!isset($tipos[$mime])) {
+        responder(['ok' => false, 'error' => 'Usa una imagen JPG, PNG o WebP.'], 422);
+    }
+    $directorio = dirname(__DIR__) . '/assets/img';
+    if (!is_dir($directorio) || !is_writable($directorio)) {
+        responder(['ok' => false, 'error' => 'El servidor no permite guardar fotos en assets/img.'], 500);
+    }
+    $extension = $tipos[$mime];
+    $destino = $directorio . '/producto-' . $id . '-' . $posicion . '.' . $extension;
+    if (!move_uploaded_file($foto['tmp_name'], $destino)) {
+        responder(['ok' => false, 'error' => 'No se pudo guardar la foto en el servidor.'], 500);
+    }
+    foreach (['jpg', 'png', 'webp'] as $otraExtension) {
+        if ($otraExtension !== $extension) {
+            $anterior = $directorio . '/producto-' . $id . '-' . $posicion . '.' . $otraExtension;
+            if (is_file($anterior)) {
+                @unlink($anterior);
+            }
+        }
+    }
+    respuesta_lista();
+}
+
+
 
 /**
  *
@@ -157,6 +256,7 @@ if ($accion === 'eliminar') {
         responder(['ok' => false, 'error' => 'Ese producto no existe.'], 404);
     }
     bd()->prepare('DELETE FROM productos WHERE id_producto = ?')->execute([$id]);
+    eliminar_imagenes_producto($id);
     respuesta_lista();
 }
 
