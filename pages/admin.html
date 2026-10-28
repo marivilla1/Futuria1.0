@@ -75,6 +75,13 @@
     .adm th,.adm td{padding:.5rem;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}
     .adm input,.adm select,.adm textarea{width:100%;padding:.4rem;font:inherit;box-sizing:border-box}
     .adm__form{display:grid;gap:.5rem;background:#f6eefa;padding:1rem;border-radius:12px;margin-top:1rem}
+    .adm__fotos{margin-top:1.25rem;padding:1rem;border:1px solid #e4d2ec;border-radius:12px;background:#fff}
+    .adm__fotos h2{margin:0 0 .35rem;font-size:1.2rem}
+    .adm__fotos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin-top:.8rem}
+    .adm__foto{display:grid;gap:.5rem;padding:.65rem;border:1px solid #e5dce9;border-radius:10px}
+    .adm__foto img,.adm__foto-vacia{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:7px;background:#f5eff8}
+    .adm__foto-vacia{display:grid;place-items:center;color:#66566d;font-size:.9rem}
+    .adm__foto input{font-size:.85rem}
     .adm__msg{margin-top:.75rem;font-weight:600}
     .adm__msg.err{color:#b00020}
   </style>
@@ -96,6 +103,11 @@
           <label>Precio (COP) <input id="pPrecio" type="number" min="0" step="1" required></label>
           <div><button class="b" type="submit" id="pGuardar">Crear producto</button> <button class="b" type="button" id="pCancelar" hidden>Cancelar edición</button></div>
         </form>
+        <div id="pFotos" class="adm__fotos" hidden>
+          <h2>Fotos del producto</h2>
+          <p>Elige una imagen JPG, PNG o WebP de máximo 5 MB para cada posición.</p>
+          <div id="pFotosLista" class="adm__fotos-grid"></div>
+        </div>
         <table><thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Precio</th><th></th></tr></thead><tbody id="tbProd"></tbody></table>
       </section>
       <section id="secUsu" hidden>
