@@ -518,7 +518,7 @@ ALTER TABLE `preguntas_test`
 -- Filtros para la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD CONSTRAINT `fk_productos_integrante` FOREIGN KEY (`id_integrante`) REFERENCES `integrantes_equipo` (`id_integrante`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_productos_integrante` FOREIGN KEY (`id_integrante_creador`) REFERENCES `integrantes_equipo` (`id_integrante`) ON DELETE SET NULL;
 
 --
 -- Filtros para la tabla `productos_usuarios`
