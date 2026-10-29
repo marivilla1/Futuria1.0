@@ -53,7 +53,7 @@ $tests = [
     'etiquetas'   => ['9 áreas', 'Intereses', 'Aptitudes', '~15 min'],
     'boton'       => 'Hacer el test CHASIDE',
     'enlace'      => 'https://orientacion-psicopedagogica.net/test/test-chaside/',
-    'imagen'      => '../assets/img/test-vocacional-1.jpg',
+    'imagen'      => '../assets/img/test-2.svg',
   ],
   [
     'id'          => 'holland',
@@ -65,7 +65,7 @@ $tests = [
     'etiquetas'   => ['6 tipos', 'RIASEC', 'Carreras', '~10 min'],
     'boton'       => 'Hacer el test de Holland',
     'enlace'      => 'https://www.orientacionuniversitaria.com/test-vocacional/test-de-holland/',
-    'imagen'      => '../assets/img/test-vocacional-2.jpg',
+    'imagen'      => '../assets/img/test-3.svg',
   ],
   [
     'id'          => 'filadd',
@@ -76,7 +76,7 @@ $tests = [
     'etiquetas'   => ['Gratis', 'Menos de 8 min', 'Colombia', 'Universidades'],
     'boton'       => 'Hacer el test de Filadd',
     'enlace'      => 'https://test-vocacional.filadd.com.co/?hl=es-US',
-    'imagen'      => '../assets/img/test-vocacional-1.jpg',
+    'imagen'      => '../assets/img/test-1.svg',
   ],
   [
     'id'          => 'edumatch',
@@ -88,7 +88,7 @@ $tests = [
     'etiquetas'   => ['Gratis', 'En línea', 'Carreras', 'Universidades'],
     'boton'       => 'Hacer el test de Edumatch',
     'enlace'      => 'https://www.cursosycarreras.co/test_vocacional_orientacion_vocacional.php?hl=es-US',
-    'imagen'      => '../assets/img/test-vocacional-2.jpg',
+    'imagen'      => '../assets/img/test-4.svg',
   ],
 ];
 
