@@ -37,19 +37,16 @@ copiar sobre tu carpeta del proyecto (reemplaza los archivos que se repiten).
    Mapas mentales", "Usar Flashcards" y "Usar Calendario" ahora sí llevan a
    las páginas reales de cada herramienta (antes solo abrían una guía).
 
-## Cómo conectar la IA a un modelo real
+## Conectar Futuria IA con Gemini
 
-Por defecto, `ia.php` responde con un **modo básico** (reglas simples) para
-que la página funcione sin configuración. Para conectarla a un modelo real:
+La página usa la API de Gemini de Google. La clave se guarda únicamente en api/inc/config.php, que está excluido de Git para no publicarla.
 
-1. Abre `ia.php`.
-2. Escribe tu clave en la constante `FUTURIA_IA_API_KEY` (arriba del archivo).
-3. Por defecto está configurado para la API de OpenAI (`gpt-4o-mini`). Si vas
-   a usar otro proveedor, ajusta `FUTURIA_IA_URL`, `FUTURIA_IA_MODELO` y el
-   formato dentro de la función `futuria_llamar_modelo()`.
-4. La "personalidad" de Futuria (cómo debe hablar, qué debe saber del sitio)
-   está en la constante `FUTURIA_PERSONA`, al inicio del archivo — puedes
-   editarla libremente.
+1. En Google AI Studio crea una clave de Gemini.
+2. En tu copia local, abre api/inc/config.ejemplo.php, guárdala como api/inc/config.php y completa también la conexión a MySQL.
+3. En config.php, pega la clave en ia_api_key. No la pegues en archivos públicos ni la subas a GitHub.
+4. Sube ese archivo por FileZilla a /htdocs/api/inc/config.php. Si ya existe uno con las credenciales de InfinityFree, edita solo la línea ia_api_key y conserva los datos de la base de datos.
+
+Si la clave está vacía, cURL no funciona o Google no responde, el chat mostrará un aviso en vez de fingir que contestó Gemini. El servidor debe permitir cURL saliente por HTTPS (puerto 443).
 
 ## Requisitos del servidor
 
