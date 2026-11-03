@@ -133,6 +133,43 @@
    * #anio
    *
    */
+
+  /**
+   *
+   * unifica el pie de página de todas las vistas, incluyendo las de cuenta y
+   * administración. Las redes, el correo de contacto y los términos siempre
+   * quedan disponibles, aunque la página no tuviera pie propio
+   *
+   */
+  var RAIZ_SITIO = new URL('../../', document.currentScript.src).href;
+  var pie = document.querySelector('.footer');
+  if (!pie) {
+    pie = document.createElement('footer');
+    document.body.appendChild(pie);
+  }
+  pie.className = 'footer footer--unificado';
+  if (!pie.id) pie.id = 'contacto';
+  pie.innerHTML =
+    '<div class="footer__inner">' +
+      '<a href="' + RAIZ_SITIO + 'index.html" aria-label="Futuria, inicio">' +
+        '<img class="footer__logo" src="' + RAIZ_SITIO + 'assets/img/logo-futuria.jpeg" alt="Logo de Futuria" width="64" height="64" loading="lazy">' +
+      '</a>' +
+      '<p class="footer__marca"><strong>FUTURIA</strong><br>Orientación vocacional y herramientas para tu futuro.</p>' +
+      '<nav class="footer__enlaces" aria-label="Enlaces del pie de página">' +
+        '<a href="' + RAIZ_SITIO + 'index.html">Inicio</a>' +
+        '<a href="' + RAIZ_SITIO + 'pages/test-vocacional.html">Tests vocacionales</a>' +
+        '<a href="' + RAIZ_SITIO + 'pages/contacto.html">Contáctanos</a>' +
+        '<a href="' + RAIZ_SITIO + 'pages/terminos.html">Términos y condiciones</a>' +
+      '</nav>' +
+      '<nav class="footer__social" aria-label="Redes sociales">' +
+        '<a href="https://www.instagram.com/futuria20?igsh=dnZ1eXp5eG1jM2Jx" target="_blank" rel="noopener noreferrer">Instagram</a>' +
+        '<a href="https://www.tiktok.com/@futuria123?_r=1&amp;_t=ZS-98hLA2DP5DJ" target="_blank" rel="noopener noreferrer">TikTok</a>' +
+        '<a href="https://www.facebook.com/share/1F4fswm9Yz/" target="_blank" rel="noopener noreferrer">Facebook</a>' +
+      '</nav>' +
+      '<a class="footer__correo" href="mailto:futuria2026@gmail.com">futuria2026@gmail.com</a>' +
+      '<p class="footer__legal">&copy; ' + new Date().getFullYear() + ' Futuria. Todos los derechos reservados.</p>' +
+    '</div>';
+
   var anio = document.getElementById('anio');
   if (anio) anio.textContent = String(new Date().getFullYear());
 
