@@ -104,3 +104,6 @@
  *
  */
 .rombo__titulo{font-family:var(--fuente-demi);letter-spacing:.18em;font-size:2 rem;color:var(--morado)}
+
+/* En celulares, mostrar completa cada foto del carrusel sin recortar sus bordes. */
+@media(max-width:600px){.carrusel__img{height:clamp(14rem,68vw,24rem);object-fit:contain;background:#FCFCFB}}
