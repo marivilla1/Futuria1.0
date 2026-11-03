@@ -43,10 +43,10 @@ define('FUTURIA_IA_API_KEY', (string)(config()['ia_api_key'] ?? ''));
  *
  */
 define('FUTURIA_IA_MODELOS', (array)(config()['ia_modelos'] ?? [
+    'gemini-3.8-flash',
+    'gemini-3.7-flash',
+    'gemini-3.6-flash',
     'gemini-3.5-flash',
-    'gemini-3.5-flash-lite',
-    'gemini-flash-lite-latest',
-    'gemini-flash-latest',
 ]));
 
 /**
@@ -158,7 +158,17 @@ $historial = array_slice($historial, -20);
  * el último resultado de test del usuario si tiene alguno (id_resultado)
  *
  */
+if (FUTURIA_IA_API_KEY === '') {
+    futuria_responder(['ok' => false, 'error' => 'Gemini todavía no está configurado. El administrador debe agregar la clave en api/inc/config.php.'], 503);
+}
+if (!function_exists('curl_init')) {
+    futuria_responder(['ok' => false, 'error' => 'El servidor no tiene habilitada la conexión cURL necesaria para Gemini.'], 503);
+}
+
 $respuesta = futuria_llamar_modelo($mensaje, $historial);
+if ($respuesta === null) {
+    futuria_responder(['ok' => false, 'error' => 'No se pudo conectar con Gemini en este momento. Inténtalo de nuevo más tarde.'], 502);
+}
 
 if ($usuario) {
     $ultimo = bd()->prepare('SELECT id_resultado FROM resultados_test WHERE id_usuario = ? ORDER BY id_resultado DESC LIMIT 1');
@@ -188,10 +198,10 @@ futuria_responder(['ok' => true, 'respuesta' => $respuesta]);
  * sigue probando. Si ninguno responde, usa el modo básico
  *
  */
-function futuria_llamar_modelo(string $mensaje, array $historial): string
+function futuria_llamar_modelo(string $mensaje, array $historial): ?string
 {
     if (FUTURIA_IA_API_KEY === '' || !function_exists('curl_init')) {
-        return futuria_modo_basico($mensaje);
+        return null;
     }
 
     $contenidos = [];
@@ -218,7 +228,7 @@ function futuria_llamar_modelo(string $mensaje, array $historial): string
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $cuerpo,
             CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_TIMEOUT        => 20,
+            CURLOPT_TIMEOUT        => 30,
             CURLOPT_HTTPHEADER     => [
                 'Content-Type: application/json',
                 'x-goog-api-key: ' . FUTURIA_IA_API_KEY,
@@ -242,7 +252,7 @@ function futuria_llamar_modelo(string $mensaje, array $historial): string
         }
     }
 
-    return futuria_modo_basico($mensaje);
+    return null;
 }
 
 /**
