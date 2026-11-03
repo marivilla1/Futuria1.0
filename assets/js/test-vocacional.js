@@ -1,10 +1,9 @@
 /**
  *
- * la página de test vocacional: pide a api/test-vocacional.php el resumen y
- * los tests recomendados y arma una tarjeta por cada test
- *
- * si el servidor no responde (por ejemplo al abrir el HTML sin PHP) usa los
- * mismos datos guardados aquí como respaldo
+ * esta página muestra dos pruebas externas: una para explorar áreas
+ * profesionales (CHASIDE) y otra para conocer el perfil de personalidad
+ * profesional (Holland/RIASEC). Cada tarjeta usa la imagen que corresponde
+ * al tema
  *
  */
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,79 +12,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const resumenEl = document.getElementById('test-resumen');
 
-  /**
-   *
-   * los datos de respaldo: el mismo resumen y los mismos cuatro tests
-   * (CHASIDE, Holland, Filadd y Edumatch) que devuelve el servidor
-   *
-   */
   const RESPALDO = {
     resumen:
-      'El test vocacional es una herramienta de orientación que te ayuda a descubrir tus ' +
-      'intereses, habilidades y aptitudes para tomar decisiones sobre tu futuro. A través ' +
-      'de preguntas sobre lo que te gusta hacer, lo que se te da bien y lo que valoras, ' +
-      'el test te muestra áreas profesionales que encajan contigo.',
+      'Explora dos aspectos complementarios de tu futuro: tus intereses y aptitudes para distintas áreas profesionales, y los rasgos de personalidad que suelen relacionarse con diferentes entornos de trabajo. Son herramientas de orientación, no decisiones definitivas.',
     tests: [
       {
         id: 'chaside',
-        nombre: 'Test CHASIDE',
+        nombre: 'Test CHASIDE · Áreas profesionales',
         etiqueta: 'Intereses y aptitudes',
         descripcion:
-          'El test CHASIDE mide tus intereses y aptitudes en nueve áreas profesionales. ' +
-          'Responde una serie de preguntas sobre actividades que te gustan o disgustan y ' +
-          'el resultado te muestra las áreas donde tendrías mayor probabilidad de éxito y satisfacción.',
-        etiquetas: ['9 áreas', 'Intereses', 'Aptitudes', '~15 min'],
-        boton: 'Hacer el test CHASIDE',
+          'Explora tus intereses y aptitudes en áreas como ciencias, salud, arte, comunicación, administración y tecnología. El resultado puede ayudarte a identificar campos profesionales que vale la pena investigar.',
+        etiquetas: ['Áreas profesionales', 'Intereses', 'Aptitudes', 'Orientativo'],
+        boton: 'Explorar áreas profesionales',
         enlace: 'https://orientacion-psicopedagogica.net/test/test-chaside/',
         imagen: '../assets/img/test-2.svg'
       },
       {
         id: 'holland',
-        nombre: 'Test de Holland (RIASEC)',
+        nombre: 'Test de personalidad Holland (RIASEC)',
         etiqueta: 'Personalidad profesional',
         descripcion:
-          'El test de Holland clasifica tu personalidad profesional en seis tipos (Realista, ' +
-          'Investigador, Artístico, Social, Emprendedor y Convencional). Conoce cuál es tu ' +
-          'código RIASEC y descubre las carreras y ocupaciones que mejor combinan con tu forma de ser.',
-        etiquetas: ['6 tipos', 'RIASEC', 'Carreras', '~10 min'],
-        boton: 'Hacer el test de Holland',
+          'Relaciona tus preferencias con seis perfiles: Realista, Investigador, Artístico, Social, Emprendedor y Convencional. Conoce los entornos y tipos de actividad que podrían encajar mejor contigo.',
+        etiquetas: ['Personalidad', '6 perfiles', 'RIASEC', 'Orientativo'],
+        boton: 'Conocer mi perfil',
         enlace: 'https://www.orientacionuniversitaria.com/test-vocacional/test-de-holland/',
         imagen: '../assets/img/test-3.svg'
-      },
-      {
-        id: 'filadd',
-        nombre: 'Test vocacional Filadd',
-        etiqueta: 'Carrera ideal',
-        descripcion:
-          'Test interactivo y gratuito pensado para estudiantes colombianos. En menos de 8 minutos ' +
-          'te sugiere tu carrera ideal y te muestra recomendaciones de universidades.',
-        etiquetas: ['Gratis', 'Menos de 8 min', 'Colombia', 'Universidades'],
-        boton: 'Hacer el test de Filadd',
-        enlace: 'https://test-vocacional.filadd.com.co/?hl=es-US',
-        imagen: '../assets/img/test-1.svg'
-      },
-      {
-        id: 'edumatch',
-        nombre: 'Test vocacional Edumatch',
-        etiqueta: 'Carreras y universidades',
-        descripcion:
-          'Test de orientación vocacional online y gratuito de Cursos y Carreras. Te ayuda a descubrir ' +
-          'tu vocación y a encontrar carreras y universidades que se ajusten a tu perfil. Para usarlo ' +
-          'te pide crear una cuenta.',
-        etiquetas: ['Gratis', 'En línea', 'Carreras', 'Universidades'],
-        boton: 'Hacer el test de Edumatch',
-        enlace: 'https://www.cursosycarreras.co/test_vocacional_orientacion_vocacional.php?hl=es-US',
-        imagen: '../assets/img/test-4.svg'
       }
     ]
   };
 
-  /**
-   *
-   * pide los datos al servidor. Si llegan, cambia el resumen y pinta sus
-   * tests; si algo falla, pinta los tests de respaldo
-   *
-   */
   fetch('../api/test-vocacional.php')
     .then((r) => (r.ok ? r.json() : Promise.reject()))
     .then((d) => {
@@ -94,33 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(() => pintar(RESPALDO.tests));
 
-  /**
-   *
-   * vacía la cuadrícula y agrega una tarjeta por cada test
-   *
-   */
   function pintar(tests) {
     grid.innerHTML = '';
     tests.forEach((t, i) => grid.appendChild(tarjeta(t, i)));
   }
 
-  /**
-   *
-   * arma la tarjeta de un test: la imagen con su etiqueta encima, el nombre,
-   * la descripción, las etiquetas pequeñas y el botón con flecha que abre el
-   * test en otra pestaña
-   *
-   * las tarjetas 2, 4, 6... llevan además la clase test--alterno, que les
-   * cambia los colores
-   *
-   */
   function tarjeta(t, i) {
     const article = document.createElement('article');
     article.className = 'test' + (i % 2 === 1 ? ' test--alterno' : '');
     article.id = t.id;
 
     const etiquetas = (t.etiquetas || [])
-      .map((e) => `<li>${e}</li>`)
+      .map((e) => '<li>' + e + '</li>')
       .join('');
 
     article.innerHTML = `
