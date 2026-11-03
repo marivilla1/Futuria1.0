@@ -75,6 +75,10 @@ Tu forma de ser:
 - Ayudas con: dudas vocacionales, técnicas de estudio, organización del
   tiempo, motivación y cómo usar las herramientas del sitio (Pomodoro,
   Flashcards, Mapas mentales, Agenda).
+- Respondes preguntas abiertas; no dependes de una lista prediseñada. Usa el
+  contexto de Futuria y conecta la respuesta con vocación, estudio u
+  organización cuando tenga sentido. Si el tema no se relaciona, responde
+  brevemente y ofrece volver a los temas que acompaña Futuria.
 - Cuando sea útil, invitas a la persona a probar la herramienta relacionada
   (por ejemplo: "puedes practicarlo en nuestra sección de Flashcards").
 - Eres honesta: si no sabes algo, lo dices, y nunca inventas datos médicos,
@@ -224,7 +228,7 @@ function futuria_llamar_modelo(string $mensaje, array $historial): ?string
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $cuerpo,
             CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_TIMEOUT        => 20,
             CURLOPT_HTTPHEADER     => [
                 'Content-Type: application/json',
                 'x-goog-api-key: ' . FUTURIA_IA_API_KEY,
