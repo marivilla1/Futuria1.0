@@ -4,11 +4,9 @@
  * el asistente "Futuria" de la página IA: recibe el mensaje que escribe la
  * persona y le devuelve la respuesta en JSON { ok, respuesta }
  *
- * guarda la conversación de cada persona (con sesión, en interacciones_ia). Si hay
- * una clave de Gemini (Google AI Studio) en config.php le pasa la
- * conversación al modelo; si no la hay, o si Gemini no responde, contesta con
- * el "modo básico", que busca palabras clave como "pomodoro" o "agenda" y
- * responde con un texto ya escrito
+ * guarda la conversación de cada persona (con sesión, en interacciones_ia). Envía la conversación a Gemini mediante la API de Google AI Studio. La clave
+ * privada se lee desde api/inc/config.php, que no se publica en GitHub. Si
+ * falta la clave, cURL o la respuesta de Gemini, el chat muestra un aviso
  *
  */
 declare(strict_types=1);
@@ -25,8 +23,8 @@ require __DIR__ . '/inc/datos.php';
 /**
  *
  * la clave de la API de Gemini (Google AI Studio), que se escribe en
- * api/inc/config.php como 'ia_api_key'. Mientras esté vacía el asistente
- * funciona en modo básico
+ * api/inc/config.php como 'ia_api_key'. No incluyas la clave en este archivo ni
+ * la publiques en GitHub
  *
  */
 define('FUTURIA_IA_API_KEY', (string)(config()['ia_api_key'] ?? ''));
@@ -36,10 +34,8 @@ define('FUTURIA_IA_API_KEY', (string)(config()['ia_api_key'] ?? ''));
  * los modelos de Gemini que se prueban, en orden: si el primero está
  * saturado o no responde, se usa el siguiente
  *
- * primero van dos modelos con versión fija que contestan en 1 a 3 segundos,
- * y al final los alias "latest", que Google mantiene apuntando al modelo
- * Flash más nuevo; así, si Google retira una versión fija, los alias siguen
- * funcionando. Se pueden cambiar en config.php con 'ia_modelos'
+ * empieza por los modelos Flash estables de Gemini y se puede ajustar desde
+ * la opción 'ia_modelos' de api/inc/config.php
  *
  */
 define('FUTURIA_IA_MODELOS', (array)(config()['ia_modelos'] ?? [
@@ -217,7 +213,7 @@ function futuria_llamar_modelo(string $mensaje, array $historial): ?string
     $cuerpo = json_encode([
         'system_instruction' => ['parts' => [['text' => FUTURIA_PERSONA]]],
         'contents'           => $contenidos,
-        'generationConfig'   => ['maxOutputTokens' => 2048, 'temperature' => 0.7],
+        'generationConfig'   => ['maxOutputTokens' => 2048],
     ], JSON_UNESCAPED_UNICODE);
 
     set_time_limit(120);
@@ -277,38 +273,3 @@ function futuria_texto_respuesta(string $json): string
     return trim($texto);
 }
 
-/**
- *
- * las respuestas del modo básico, cuando no hay modelo de IA conectado
- *
- * pasa el mensaje a minúsculas y sin tildes y busca, en este orden, las
- * palabras pomodoro, flashcard, tarjeta, mapa, agenda, vocacion, estres y
- * hola. Devuelve el texto de la primera que encuentre; si no encuentra
- * ninguna, devuelve un saludo que explica que está en modo básico
- *
- */
-function futuria_modo_basico(string $mensaje): string
-{
-    $m = strtr(mb_strtolower($mensaje), ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u']);
-
-    $reglas = [
-        'pomodoro'  => 'El método Pomodoro divide tu estudio en bloques de 25 minutos con descansos de 5. Puedes usar el temporizador real en nuestra sección de Pomodoro. ¿Quieres que te explique cómo armar tu primer bloque de estudio?',
-        'flashcard' => 'Las Flashcards son tarjetas de pregunta-respuesta para memoria activa: repasa lo que fallas más seguido y lo que dominas déjalo descansar un poco. Puedes crear tu propio mazo en la sección de Flashcards.',
-        'tarjeta'   => 'Las tarjetas (flashcards) funcionan mejor si las repasas en sesiones cortas y frecuentes. Puedes crear las tuyas en la sección de Flashcards del sitio.',
-        'mapa'      => 'Un mapa mental empieza con una idea central y de ahí se abren ramas con subtemas y palabras clave. Puedes construir el tuyo en la sección de Mapas mentales.',
-        'agenda'    => 'La Agenda escolar te ayuda a anotar tareas con día, fecha y hora para que nada se te olvide. Puedes organizarla en la sección de Agenda.',
-        'vocacion'  => 'Para tu orientación vocacional, piensa en qué actividades te hacen perder la noción del tiempo y qué problemas te gustaría resolver en el mundo. Esa combinación suele ser una buena pista sobre tu vocación.',
-        'estres'    => 'Si sientes estrés por los estudios, prueba dividir tus tareas en bloques pequeños (Pomodoro) y date descansos reales. No tienes que resolverlo todo en un solo día.',
-        'hola'      => '¡Hola! Soy Futuria, tu guía para orientación vocacional, estudio y organización del tiempo. Cuéntame qué necesitas: ¿tienes dudas sobre tu vocación, quieres mejorar tus hábitos de estudio, u organizar tu agenda?',
-    ];
-
-    foreach ($reglas as $clave => $texto) {
-        if (mb_strpos($m, $clave) !== false) {
-            return $texto;
-        }
-    }
-
-    return "Soy Futuria 🌙 Todavía estoy en modo básico porque esta instancia no tiene una API de IA conectada, "
-         . "pero puedo orientarte sobre nuestros métodos (Pomodoro, Flashcards, Mapas mentales, Agenda) y sobre "
-         . "orientación vocacional. Cuéntame un poco más sobre lo que necesitas.";
-}
