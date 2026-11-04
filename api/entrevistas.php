@@ -21,33 +21,37 @@ header('Cache-Control: no-store');
  */
 $entrevistas = [
   [
-    'area'        => 'Transporte - Piloto',
+    'area'        => 'Transporte - Piloto de avión',
     'nombre'      => 'Jacobo Román',
-    'profesion'   => 'Aviación',
+    'profesion'   => 'Piloto de avión',
     'imagen'      => '../assets/img/piloto.jpg',
     'audio'       => '../assets/audio/jacobo.mp3',
-    'orientacion' => 'Le diría que primero estudie algo que le guste; a mí me parece que estudiar algo que a uno no le guste es un infierno  y me he dado cuenta de que en cualquier área o cualquier campo que uno escoja, uno mismo se hace su destino',
-    'carrera'     => 'SIIII.',
+    'pregunta1'   => '¿Qué le dirías a alguien que aún no sabe qué estudiar?',
+    'orientacion' => 'Le diría que primero estudie algo que le guste. A mí me parece que estudiar algo que a uno no le gusta es un infierno. No debería elegir únicamente por tener un sustento económico. Me he dado cuenta de que, en cualquier área o campo que uno escoja, uno mismo se hace su destino.',
+    'pregunta2'   => '¿Qué consejo le darías a alguien que quiere estudiar para ser piloto de avión?',
+    'carrera'     => 'Primero, hay que ser consciente del compromiso que conlleva esta elección. No debe guiarse únicamente por el aspecto económico, porque trae consigo muchas dificultades, retos y decepciones y, sobre todo, requiere mucho autoconocimiento.',
   ],
   [
-    'area'        => 'Entretenimiento - Streamer',
-    'nombre'      => 'Juan Felipe Restrepo (Ñe)',
-    'profesion'   => 'Streamer - Estudiante',
+    'area'        => 'Marketing y creación de contenido',
+    'nombre'      => 'Juan Felipe Restrepo Sánchez (El Ñe)',
+    'profesion'   => 'Creador de contenido',
     'imagen'      => '../assets/img/stremer.jpg',
     'audio'       => '../assets/audio/ne.mp3',
-    'pregunta1'   => '¿Cómo es crear contenido mientras estudias?',
-    'orientacion' => 'En la entrevista, Ñe comparte su experiencia como creador de contenido y estudiante.',
-    'pregunta2'   => '¿Qué tan exigente es la creación de contenido?',
-    'carrera'     => 'La verdad es muy complejo, pero también trato de asimilarlo mucho con las personas que trabajan y estudian al mismo tiempo ya que la creación de contenido es como un trabajo y se le tiene que dedicar mucho tiempo para que pueda ser rentable.',
+    'pregunta1'   => '¿Cómo elegiste la carrera que estás estudiando?',
+    'orientacion' => 'Es un proceso complejo. En mi caso requirió muchos cambios de ideas y decisiones. No fue hasta finales de mi último año de bachillerato que decidí lo que realmente quería hacer. Descubrí mi pasión por el marketing digital y la relacioné con distintos ámbitos que eran mi fuerte, lo que me llevó a estudiar Ingeniería Comercial.',
+    'pregunta2'   => '¿Sientes que con tu trabajo ayudas a otras personas a decidir qué hacer en su futuro?',
+    'carrera'     => 'Indirectamente puede influir. Como creador, busco hacer un vínculo con las personas, motivarlas y alegrarles el día: que puedan reírse, salir de la monotonía y, con base en mi experiencia, aconsejarlas para que eviten cometer los mismos errores que cometí.',
   ],
   [
     'area'        => 'Social y Humanidades - Abogado',
-    'nombre'      => 'Santiago Mejía',
+    'nombre'      => 'Sebastián Días Bolívar',
     'profesion'   => 'Abogado',
     'imagen'      => '../assets/img/abogado.jpg',
     'audio'       => '../assets/audio/sebastian.mp3',
-    'orientacion' => 'SIIIII.',
-    'carrera'     => 'Si vas a estudiar derecho, dedícate completamente, lee más de lo que te dan en clases, estudia muchos libros, busca prácticas adicionales, no te quedes con lo mínimo',
+    'pregunta1'   => '¿Qué le dirías a alguien que aún no sabe qué estudiar?',
+    'orientacion' => 'Debe considerar varios aspectos. Es importante escoger algo que te llame la atención y se alinee con tus gustos; también debes considerar la salida laboral y económica. La combinación de estos aspectos es fundamental para escoger tu vocación.',
+    'pregunta2'   => '¿Qué consejo le darías a alguien que va a estudiar Derecho?',
+    'carrera'     => 'Que sea el mejor. Si vas a estudiar Derecho, dedícate completamente: lee más de lo que te dan en clase, estudia muchos libros y busca prácticas adicionales. No te quedes con lo mínimo; métete con muchas ganas y de lleno a estudiar Derecho.',
   ],
   [
     'area'        => 'Arte y cine - Dirección',
@@ -60,7 +64,7 @@ $entrevistas = [
     'pregunta2'   => '¿Qué consejos le darías a las personas que quieren estudiar cine?',
     'carrera'     => 'Pienso que deberían empezar grabando una historia cercana y sencilla de hacer: un personaje que conozcan, una anécdota que hayan visto o algo que haya ocurrido en su barrio, en su calle o en su propia vida. Después pueden explorar cómo darle forma de cortometraje.',
   ],
-];
+];;
 
 /**
  *
