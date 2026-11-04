@@ -4,7 +4,7 @@
  * el asistente "Futuria" de la página IA: recibe el mensaje que escribe la
  * persona y le devuelve la respuesta en JSON { ok, respuesta }
  *
- * guarda la conversación de cada persona (con sesión, en interacciones_ia). Envía la conversación a Gemini mediante la API de Google AI Studio. La clave
+ * guarda la conversación de cada persona (con sesión, en interacciones_ia). Envía la conversación a OpenRouter. La clave
  * privada se lee desde api/inc/config.php, que no se publica en GitHub. Si
  * falta la clave, cURL o la respuesta de Gemini, el chat muestra un aviso
  *
@@ -22,7 +22,7 @@ require __DIR__ . '/inc/datos.php';
 
 /**
  *
- * la clave de la API de Gemini (Google AI Studio), que se escribe en
+ * la clave privada de OpenRouter, que se escribe en
  * api/inc/config.php como 'ia_api_key'. No incluyas la clave en este archivo ni
  * la publiques en GitHub
  *
@@ -38,12 +38,7 @@ define('FUTURIA_IA_API_KEY', (string)(config()['ia_api_key'] ?? ''));
  * la opción 'ia_modelos' de api/inc/config.php
  *
  */
-define('FUTURIA_IA_MODELOS', (array)(config()['ia_modelos'] ?? [
-    'gemini-3.8-flash',
-    'gemini-3.7-flash',
-    'gemini-3.6-flash',
-    'gemini-3.5-flash',
-]));
+define('FUTURIA_IA_MODELO', (string)(config()['ia_modelo'] ?? 'openrouter/free'));
 
 /**
  *
@@ -51,7 +46,7 @@ define('FUTURIA_IA_MODELOS', (array)(config()['ia_modelos'] ?? [
  * modelo
  *
  */
-const FUTURIA_IA_URL = 'https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent';
+const FUTURIA_IA_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 /**
  *
@@ -159,7 +154,7 @@ $historial = array_slice($historial, -20);
  *
  */
 if (FUTURIA_IA_API_KEY === '') {
-    futuria_responder(['ok' => false, 'error' => 'Gemini todavía no está configurado. El administrador debe agregar la clave en api/inc/config.php.'], 503);
+    futuria_responder(['ok' => false, 'error' => 'OpenRouter todavía no está configurado. El administrador debe agregar la clave en api/inc/config.php.'], 503);
 }
 if (!function_exists('curl_init')) {
     futuria_responder(['ok' => false, 'error' => 'El servidor no tiene habilitada la conexión cURL necesaria para Gemini.'], 503);
@@ -167,7 +162,7 @@ if (!function_exists('curl_init')) {
 
 $respuesta = futuria_llamar_modelo($mensaje, $historial);
 if ($respuesta === null) {
-    futuria_responder(['ok' => false, 'error' => 'No se pudo conectar con Gemini en este momento. Inténtalo de nuevo más tarde.'], 502);
+    futuria_responder(['ok' => false, 'error' => 'No se pudo conectar con OpenRouter en este momento. Inténtalo de nuevo más tarde.'], 502);
 }
 
 if ($usuario) {
@@ -204,76 +199,72 @@ function futuria_llamar_modelo(string $mensaje, array $historial): ?string
         return null;
     }
 
-    $contenidos = [];
+    $mensajes = [['role' => 'system', 'content' => FUTURIA_PERSONA]];
     foreach (array_slice($historial, -10, -1) as $turno) {
-        $rol = $turno['rol'] === 'usuario' ? 'user' : 'model';
-        if (!$contenidos && $rol === 'model') {
+        $rol = $turno['rol'] === 'usuario' ? 'user' : 'assistant';
+        if (count($mensajes) === 1 && $rol === 'assistant') {
             continue;
         }
-        $contenidos[] = ['role' => $rol, 'parts' => [['text' => (string)$turno['texto']]]];
+        $mensajes[] = ['role' => $rol, 'content' => (string)$turno['texto']];
     }
-    $contenidos[] = ['role' => 'user', 'parts' => [['text' => $mensaje]]];
+    $mensajes[] = ['role' => 'user', 'content' => $mensaje];
 
     $cuerpo = json_encode([
-        'system_instruction' => ['parts' => [['text' => FUTURIA_PERSONA]]],
-        'contents'           => $contenidos,
-        'generationConfig'   => ['maxOutputTokens' => 2048],
+        'model' => FUTURIA_IA_MODELO,
+        'messages' => $mensajes,
+        'max_tokens' => 1200,
     ], JSON_UNESCAPED_UNICODE);
 
-    set_time_limit(120);
-    foreach (FUTURIA_IA_MODELOS as $modelo) {
-        $ch = curl_init(str_replace('{modelo}', rawurlencode((string)$modelo), FUTURIA_IA_URL));
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $cuerpo,
-            CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_TIMEOUT        => 20,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'x-goog-api-key: ' . FUTURIA_IA_API_KEY,
-            ],
-        ]);
-        $resultado = curl_exec($ch);
-        $codigo    = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error     = curl_error($ch);
-        curl_close($ch);
+    set_time_limit(60);
+    $ch = curl_init(FUTURIA_IA_URL);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $cuerpo,
+        CURLOPT_CONNECTTIMEOUT => 8,
+        CURLOPT_TIMEOUT => 45,
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . FUTURIA_IA_API_KEY,
+            'HTTP-Referer: https://futuria1.infinityfree.me',
+            'X-Title: Futuria',
+        ],
+    ]);
+    $resultado = curl_exec($ch);
+    $codigo = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
 
-        if ($resultado !== false && $codigo === 200) {
-            $texto = futuria_texto_respuesta((string)$resultado);
-            if ($texto !== '') {
-                return $texto;
-            }
-        }
-
-        error_log("Futuria IA: el modelo $modelo respondió $codigo $error");
-        if (in_array($codigo, [400, 401, 403], true)) {
-            break;
+    if ($resultado !== false && $codigo === 200) {
+        $texto = futuria_texto_respuesta((string)$resultado);
+        if ($texto !== '') {
+            return $texto;
         }
     }
 
+    error_log("Futuria IA/OpenRouter: respuesta HTTP $codigo $error");
     return null;
 }
 
 /**
- *
- * saca el texto de la respuesta de Gemini
- *
- * la respuesta trae una lista de candidatos y cada uno trae partes; se juntan
- * las partes de texto del primero, sin las de "pensamiento" (thought). Si no
- * hay texto devuelve una cadena vacía
- *
+ * Extrae el texto de la primera respuesta de chat completions.
  */
 function futuria_texto_respuesta(string $json): string
 {
     $datos = json_decode($json, true);
-    $partes = $datos['candidates'][0]['content']['parts'] ?? [];
-    $texto = '';
-    foreach ($partes as $parte) {
-        if (empty($parte['thought']) && isset($parte['text'])) {
-            $texto .= $parte['text'];
-        }
-    }
-    return trim($texto);
-}
+    $contenido = $datos['choices'][0]['message']['content'] ?? '';
 
+    if (is_string($contenido)) {
+        return trim($contenido);
+    }
+    if (is_array($contenido)) {
+        $partes = [];
+        foreach ($contenido as $parte) {
+            if (isset($parte['text']) && is_string($parte['text'])) {
+                $partes[] = $parte['text'];
+            }
+        }
+        return trim(implode("\n", $partes));
+    }
+    return '';
+}
