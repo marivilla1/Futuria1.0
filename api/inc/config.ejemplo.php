@@ -16,5 +16,5 @@ return [
     'usuario' => 'root',
     'contrasena' => '',
     'ia_api_key' => '', // Clave privada de OpenRouter: solo en config.php
-    'ia_modelo' => 'qwen/qwen-2.5-72b-instruct:free', // Modelo gratuito de instrucciones, con soporte multilingüe
+    'ia_modelo' => 'openrouter/free', // Modelo gratuito de instrucciones, con soporte multilingüe
 ];
