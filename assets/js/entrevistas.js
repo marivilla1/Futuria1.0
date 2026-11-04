@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function pintar(datos){
     if(!lista)return;lista.innerHTML='';
     datos.forEach(function(dato,indice){
-      var item=document.createElement('article');item.className='area'+(indice===0?' abierta':'');
+      var item=document.createElement('article');item.className='area'+(indice===0?' abierta':'')+(dato.video?' area--video':'');
       var boton=document.createElement('button');boton.type='button';boton.className='area__boton';boton.setAttribute('aria-expanded',indice===0?'true':'false');
       var panelId='area-panel-'+indice;boton.setAttribute('aria-controls',panelId);
       boton.innerHTML='<span class="area__numero">'+String(indice+1).padStart(2,'0')+'</span><span class="area__nombre"></span><span class="area__icono" aria-hidden="true">+</span>';
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function(){
        * el medio de la entrevista y las partes del reproductor
        *
        */
-      var audio=panel.querySelector('audio');var video=panel.querySelector('.entrevista__video');var medio=dato.video?video:audio;if(dato.video){video.src=dato.video;video.poster=dato.imagen||'';video.hidden=false;}else if(dato.audio){audio.src=dato.audio;}
+      var audio=panel.querySelector('audio');var video=panel.querySelector('.entrevista__video');var medio=dato.video?video:audio;if(dato.video){video.src=dato.video;video.poster=dato.imagen||'';video.hidden=true;panel.querySelector('.entrevista__imagen').appendChild(video);}else if(dato.audio){audio.src=dato.audio;}
       var play=panel.querySelector('.audio__boton');
       var texto=panel.querySelector('.audio__texto');
       var icono=panel.querySelector('.audio__icono');
@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function(){
        */
       play.addEventListener('click',function(){
         if(medio.paused){
+          if(dato.video){img.hidden=true;video.hidden=false;}
           if(medioActual&&medioActual!==medio){
             medioActual.pause();
           }
