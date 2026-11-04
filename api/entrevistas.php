@@ -34,7 +34,7 @@ $entrevistas = [
     'nombre'      => 'Juan Felipe Restrepo (Ñe)',
     'profesion'   => 'Streamer - Estudiante',
     'imagen'      => '../assets/img/stremer.jpg',
-    'audio'       => '../assets/audio/ñe.mp3',
+    'audio'       => '../assets/audio/ÑE.mpeg',
     'orientacion' => '.',
     'carrera'     => 'La verdad es muy complejo, pero también trato de asimilarlo mucho con las personas que trabajan y estudian al mismo tiempo ya que la creación de contenido es como un trabajo y se le tiene que dedicar mucho tiempo para que pueda ser rentable.',
   ],
@@ -46,6 +46,17 @@ $entrevistas = [
     'audio'       => '../assets/audio/sebastian.mp3',
     'orientacion' => 'SIIIII.',
     'carrera'     => 'Si vas a estudiar derecho, dedícate completamente, lee más de lo que te dan en clases, estudia muchos libros, busca prácticas adicionales, no te quedes con lo mínimo',
+  ],
+  [
+    'area'        => 'Arte y cine - Dirección',
+    'nombre'      => 'Victor Manuel Gaviria Gonzales',
+    'profesion'   => 'Director de cine',
+    'imagen'      => '../assets/img/victor-cine.jpg',
+    'video'       => '../assets/video/VICTOR.mp4',
+    'pregunta1'   => '¿Qué te inspiró en el arte?',
+    'orientacion' => 'Tuve un papá muy narrador. Contaba historias de su vida y de su pueblo, donde aparecían duendes, brujas, almas y el diablo. Esas historias nos marcaron. Cuando terminé el bachillerato, le pedí unos libros; empecé a escribir poesía y me fui convirtiendo en escritor.',
+    'pregunta2'   => '¿Qué consejos le darías a las personas que quieren estudiar cine?',
+    'carrera'     => 'Pienso que deberían empezar grabando una historia cercana y sencilla de hacer: un personaje que conozcan, una anécdota que hayan visto o algo que haya ocurrido en su barrio, en su calle o en su propia vida. Después pueden explorar cómo darle forma de cortometraje.',
   ],
 ];
 
