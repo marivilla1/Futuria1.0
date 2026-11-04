@@ -318,3 +318,12 @@ button{font:inherit}
 /* El video usa el mismo bloque y los controles personalizados que los audios. */
 .entrevista__video{display:block;flex:0 0 100%;width:100%;max-height:70vh;aspect-ratio:16/9;margin:0 0 .5rem;border:1px solid rgba(219,182,232,.35);border-radius:1rem;background:#111;object-fit:contain}
 .entrevista__video[hidden]{display:none}
+
+
+/* El retrato del director se muestra completo; al reproducir, el video ocupa ese mismo espacio. */
+.area--video .entrevista__imagen{aspect-ratio:auto;display:flex;align-items:center;justify-content:center;background:transparent}
+.area--video .entrevista__imagen img{width:auto;height:auto;max-width:100%;max-height:70vh;object-fit:contain;border-radius:1rem}
+.area--video .entrevista__imagen img[hidden]{display:none!important}
+.area--video .entrevista__imagen .entrevista__video{display:block;flex:0 1 auto;width:100%;max-width:100%;max-height:70vh;aspect-ratio:16/9;object-fit:contain;background:#111;border-radius:1rem}
+.area--video .entrevista__imagen .entrevista__video[hidden]{display:none!important}
+@media(max-width:850px){.area--video .entrevista__imagen img,.area--video .entrevista__imagen .entrevista__video{max-height:62vh}}
