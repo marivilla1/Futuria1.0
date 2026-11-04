@@ -19,10 +19,11 @@
 var ENTREVISTAS_RESPALDO = [
   {area:'Transporte - Piloto',nombre:'Jacobo Román',profesion:'Aviación',imagen:'../assets/img/piloto.jpg',audio:'../assets/audio/jacobo.mp3',orientacion:'Le diría que primero estudie algo que le guste; a mí me parece que estudiar algo que a uno no le guste es un infierno  y me he dado cuenta de que en cualquier área o cualquier campo que uno escoja, uno mismo se hace su destino',carrera:'SIIII.'},
 
-  {area:'Entretenimiento - Streamer',nombre:'Juan Felipe Restrepo (Ñe)',profesion:'Streamer - Estudiante',imagen:'../assets/img/stremer.jpg',audio:'../assets/audio/ñe.mp3',orientacion:'.',carrera:'La verdad es muy complejo, pero también trato de asimilarlo mucho con las personas que trabajan y estudian al mismo tiempo ya que la creación de contenido es como un trabajo y se le tiene que dedicar mucho tiempo para que pueda ser rentable.'},
+  {area:'Entretenimiento - Streamer',nombre:'Juan Felipe Restrepo (Ñe)',profesion:'Streamer - Estudiante',imagen:'../assets/img/stremer.jpg',audio:'../assets/audio/ÑE.mpeg',orientacion:'.',carrera:'La verdad es muy complejo, pero también trato de asimilarlo mucho con las personas que trabajan y estudian al mismo tiempo ya que la creación de contenido es como un trabajo y se le tiene que dedicar mucho tiempo para que pueda ser rentable.'},
 
   {area:'Social y Humanidades - Abogado',nombre:'Santiago Mejía',profesion:'Abogado',imagen:'../assets/img/abogado.jpg',audio:'../assets/audio/sebastian.mp3',orientacion:'SIIIII.',carrera:'Si vas a estudiar derecho, dedícate completamente, lee más de lo que te dan en clases, estudia muchos libros, busca prácticas adicionales, no te quedes con lo mínimo'},
 
+  {area:'Arte y cine - Dirección',nombre:'Victor Manuel Gaviria Gonzales',profesion:'Director de cine',imagen:'../assets/img/victor-cine.jpg',video:'../assets/video/VICTOR.mp4',pregunta1:'¿Qué te inspiró en el arte?',orientacion:'Tuve un papá muy narrador. Contaba historias de su vida y de su pueblo, donde aparecían duendes, brujas, almas y el diablo. Esas historias nos marcaron. Cuando terminé el bachillerato, le pedí unos libros; empecé a escribir poesía y me fui convirtiendo en escritor.',pregunta2:'¿Qué consejos le darías a las personas que quieren estudiar cine?',carrera:'Pienso que deberían empezar grabando una historia cercana y sencilla de hacer: un personaje que conozcan, una anécdota que hayan visto o algo que haya ocurrido en su barrio, en su calle o en su propia vida. Después pueden explorar cómo darle forma de cortometraje.'},
 ];
 
 /**
@@ -78,18 +79,18 @@ document.addEventListener('DOMContentLoaded', function(){
        *
        */
       var panel=document.createElement('div');panel.className='area__panel';panel.id=panelId;
-      panel.innerHTML='<div class="area__interior"><div class="entrevista"><figure class="entrevista__imagen"><img loading="lazy" width="900" height="700"></figure><div class="entrevista__contenido"><h3 class="entrevista__nombre"></h3><p class="entrevista__profesion"></p><div class="consejos"><section class="consejo"><h4>Si aún no sabes qué estudiar</h4><p class="consejo__orientacion"></p></section><section class="consejo"><h4>Si contemplas esta carrera</h4><p class="consejo__carrera"></p></section></div><div class="audio"><button class="audio__boton" type="button"><span class="audio__icono" aria-hidden="true">▶</span><span class="audio__texto">Reproducir entrevista</span></button><div class="audio__progreso-wrapper" style="display:flex; align-items:center; gap:8px; width:100%; margin-top:8px;"><span class="audio__tiempo-actual" style="font-size:0.8rem; color:rgba(252,252,251,0.8);">00:00</span><input type="range" class="audio__barra" value="0" min="0" max="100" style="flex:1; cursor:pointer;"><span class="audio__tiempo-total" style="font-size:0.8rem; color:rgba(252,252,251,0.8);">00:00</span></div><audio preload="metadata"></audio></div></div></div></div>';
+      panel.innerHTML='<div class="area__interior"><div class="entrevista"><figure class="entrevista__imagen"><img loading="lazy" width="900" height="700"></figure><div class="entrevista__contenido"><h3 class="entrevista__nombre"></h3><p class="entrevista__profesion"></p><video class="entrevista__video" controls preload="metadata" playsinline hidden></video><div class="consejos"><section class="consejo"><h4 class="consejo__pregunta1">Si aún no sabes qué estudiar</h4><p class="consejo__orientacion"></p></section><section class="consejo"><h4 class="consejo__pregunta2">Si contemplas esta carrera</h4><p class="consejo__carrera"></p></section></div><div class="audio"><button class="audio__boton" type="button"><span class="audio__icono" aria-hidden="true">▶</span><span class="audio__texto">Reproducir entrevista</span></button><div class="audio__progreso-wrapper" style="display:flex; align-items:center; gap:8px; width:100%; margin-top:8px;"><span class="audio__tiempo-actual" style="font-size:0.8rem; color:rgba(252,252,251,0.8);">00:00</span><input type="range" class="audio__barra" value="0" min="0" max="100" style="flex:1; cursor:pointer;"><span class="audio__tiempo-total" style="font-size:0.8rem; color:rgba(252,252,251,0.8);">00:00</span></div><audio preload="metadata"></audio></div></div></div></div>';
       
       var img=panel.querySelector('img');img.src=dato.imagen;img.alt='Ilustración del área de '+dato.area;
       panel.querySelector('.entrevista__nombre').textContent=dato.nombre;panel.querySelector('.entrevista__profesion').textContent=dato.profesion;
-      panel.querySelector('.consejo__orientacion').textContent=dato.orientacion;panel.querySelector('.consejo__carrera').textContent=dato.carrera;
+      panel.querySelector('.consejo__orientacion').textContent=dato.orientacion;panel.querySelector('.consejo__carrera').textContent=dato.carrera;panel.querySelector('.consejo__pregunta1').textContent=dato.pregunta1||'Si aún no sabes qué estudiar';panel.querySelector('.consejo__pregunta2').textContent=dato.pregunta2||'Si contemplas esta carrera';
       
       /**
        *
        * el audio de la entrevista y las partes del reproductor
        *
        */
-      var audio=panel.querySelector('audio');audio.src=dato.audio;
+      var audio=panel.querySelector('audio');audio.src=dato.audio;var video=panel.querySelector('.entrevista__video');if(dato.video){video.src=dato.video;video.hidden=false;panel.querySelector('.audio').hidden=true;video.addEventListener('play',function(){if(audioActual){audioActual.pause();audioActual=null;}});}
       var play=panel.querySelector('.audio__boton');
       var texto=panel.querySelector('.audio__texto');
       var icono=panel.querySelector('.audio__icono');
