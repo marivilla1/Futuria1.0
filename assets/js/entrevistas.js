@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function(){
        * el audio de la entrevista y las partes del reproductor
        *
        */
-      var audio=panel.querySelector('audio');audio.src=dato.audio;var video=panel.querySelector('.entrevista__video');if(dato.video){video.src=dato.video;video.hidden=false;panel.querySelector('.audio').hidden=true;video.addEventListener('play',function(){if(audioActual){audioActual.pause();audioActual=null;}});}
+      var audio=panel.querySelector('audio');if(dato.audio)audio.src=dato.audio;var video=panel.querySelector('.entrevista__video');if(dato.video){video.src=dato.video;video.hidden=false;panel.querySelector('.audio').hidden=true;video.addEventListener('play',function(){if(audioActual){audioActual.pause();audioActual=null;}});}
       var play=panel.querySelector('.audio__boton');
       var texto=panel.querySelector('.audio__texto');
       var icono=panel.querySelector('.audio__icono');
