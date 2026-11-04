@@ -6,7 +6,7 @@
  *
  * guarda la conversación de cada persona (con sesión, en interacciones_ia). Envía la conversación a OpenRouter. La clave
  * privada se lee desde api/inc/config.php, que no se publica en GitHub. Si
- * falta la clave, cURL o la respuesta de Gemini, el chat muestra un aviso
+ * falta la clave, cURL o la respuesta de OpenRouter, el chat muestra un aviso
  *
  */
 declare(strict_types=1);
@@ -31,19 +31,15 @@ define('FUTURIA_IA_API_KEY', (string)(config()['ia_api_key'] ?? ''));
 
 /**
  *
- * los modelos de Gemini que se prueban, en orden: si el primero está
- * saturado o no responde, se usa el siguiente
- *
- * empieza por los modelos Flash estables de Gemini y se puede ajustar desde
- * la opción 'ia_modelos' de api/inc/config.php
+ * el modelo de OpenRouter se define en api/inc/config.php; openrouter/free
+ * selecciona un modelo gratuito disponible
  *
  */
 define('FUTURIA_IA_MODELO', (string)(config()['ia_modelo'] ?? 'openrouter/free'));
 
 /**
  *
- * la dirección de la API de Gemini; {modelo} se cambia por el nombre de cada
- * modelo
+ * el endpoint de chat completions de OpenRouter
  *
  */
 const FUTURIA_IA_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -157,7 +153,7 @@ if (FUTURIA_IA_API_KEY === '') {
     futuria_responder(['ok' => false, 'error' => 'OpenRouter todavía no está configurado. El administrador debe agregar la clave en api/inc/config.php.'], 503);
 }
 if (!function_exists('curl_init')) {
-    futuria_responder(['ok' => false, 'error' => 'El servidor no tiene habilitada la conexión cURL necesaria para Gemini.'], 503);
+    futuria_responder(['ok' => false, 'error' => 'El servidor no tiene habilitada la conexión cURL necesaria para OpenRouter.'], 503);
 }
 
 $respuesta = futuria_llamar_modelo($mensaje, $historial);
@@ -181,7 +177,7 @@ futuria_responder(['ok' => true, 'respuesta' => $respuesta]);
 
 /**
  *
- * le pregunta a Gemini y devuelve su respuesta como texto
+ * envía la conversación a OpenRouter y devuelve la respuesta como texto
  *
  * si no hay clave o el servidor no tiene cURL (la herramienta de PHP para
  * llamar a otras páginas) responde en modo básico. Si hay clave, arma la
