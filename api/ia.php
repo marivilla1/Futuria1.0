@@ -31,11 +31,11 @@ define('FUTURIA_IA_API_KEY', (string)(config()['ia_api_key'] ?? ''));
 
 /**
  *
- * el modelo de OpenRouter se define en api/inc/config.php; qwen/qwen-2.5-72b-instruct:free
+ * el modelo de OpenRouter se define en api/inc/config.php; openrouter/free
  * selecciona un modelo gratuito disponible
  *
  */
-define('FUTURIA_IA_MODELO', (string)(config()['ia_modelo'] ?? 'qwen/qwen-2.5-72b-instruct:free'));
+define('FUTURIA_IA_MODELO', (string)(config()['ia_modelo'] ?? 'openrouter/free'));
 
 /**
  *
