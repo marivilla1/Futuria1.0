@@ -160,7 +160,26 @@ if (!function_exists('curl_init')) {
 
 $respuesta = futuria_llamar_modelo($mensaje, $historial);
 if ($respuesta === null) {
-    futuria_responder(['ok' => false, 'error' => 'No se pudo conectar con OpenRouter en este momento. Inténtalo de nuevo más tarde.'], 502);
+    $codigoOpenRouter = (int)($GLOBALS['FUTURIA_IA_HTTP_CODE'] ?? 0);
+    $errorCurl = (string)($GLOBALS['FUTURIA_IA_CURL_ERROR'] ?? '');
+
+    if ($errorCurl !== '') {
+        $aviso = 'El servidor no logró comunicarse con OpenRouter por HTTPS. Detalle: ' . $errorCurl;
+    } elseif ($codigoOpenRouter === 401 || $codigoOpenRouter === 403) {
+        $aviso = 'OpenRouter rechazó la clave (HTTP ' . $codigoOpenRouter . '). Revisa que la clave esté activa y bien copiada en api/inc/config.php.';
+    } elseif ($codigoOpenRouter === 402) {
+        $aviso = 'OpenRouter indica que esta clave no tiene crédito disponible (HTTP 402). Revisa el límite y el saldo de tu cuenta.';
+    } elseif ($codigoOpenRouter === 404) {
+        $aviso = 'OpenRouter no encontró el modelo configurado (HTTP 404). El modelo gratuito puede no estar disponible ahora.';
+    } elseif ($codigoOpenRouter === 429) {
+        $aviso = 'OpenRouter recibió demasiadas solicitudes o alcanzó el límite de uso (HTTP 429). Espera un momento e inténtalo de nuevo.';
+    } elseif ($codigoOpenRouter > 0) {
+        $aviso = 'OpenRouter respondió con un error HTTP ' . $codigoOpenRouter . '.';
+    } else {
+        $aviso = 'OpenRouter no devolvió una respuesta válida. Revisa la conexión HTTPS del servidor.';
+    }
+
+    futuria_responder(['ok' => false, 'error' => $aviso], 502);
 }
 
 if ($usuario) {
@@ -231,6 +250,8 @@ function futuria_llamar_modelo(string $mensaje, array $historial): ?string
     $resultado = curl_exec($ch);
     $codigo = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $error = curl_error($ch);
+    $GLOBALS['FUTURIA_IA_HTTP_CODE'] = $codigo;
+    $GLOBALS['FUTURIA_IA_CURL_ERROR'] = $resultado === false ? $error : '';
     curl_close($ch);
 
     if ($resultado !== false && $codigo === 200) {
