@@ -6,7 +6,7 @@
  *
  * si el servidor no responde usa la lista de respaldo escrita aquí, que tiene
  * las entrevistas reales del equipo (Jacobo, Ñe, Sebastián y Víctor). Solo puede haber
- * un área abierta y un audio sonando a la vez
+ * un área abierta y un medio sonando a la vez
  *
  */
 
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function(){
    * se reproduce otro)
    *
    */
-  var lista=document.getElementById('entrevistas-lista');var audioActual=null;
+  var lista=document.getElementById('entrevistas-lista');var medioActual=null;
 
   /**
    *
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function(){
       
       /**
        *
-       * el audio de la entrevista y las partes del reproductor
+       * el medio de la entrevista y las partes del reproductor
        *
        */
       var audio=panel.querySelector('audio');var video=panel.querySelector('.entrevista__video');var medio=dato.video?video:audio;if(dato.video){video.src=dato.video;video.hidden=false;}else if(dato.audio){audio.src=dato.audio;}
@@ -153,11 +153,11 @@ document.addEventListener('DOMContentLoaded', function(){
        */
       play.addEventListener('click',function(){
         if(medio.paused){
-          if(audioActual&&audioActual!==medio){
-            audioActual.pause();
+          if(medioActual&&medioActual!==medio){
+            medioActual.pause();
           }
           medio.play().then(function(){
-            audioActual=medio;
+            medioActual=medio;
             mostrarPausa();
           }).catch(function(){
             texto.textContent='No se pudo cargar la entrevista';
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
       /**
        *
-       * al arrastrar la barra, el audio salta a ese punto
+       * al arrastrar la barra, la reproducción salta a ese punto
        *
        */
       barra.addEventListener('input', function(){
