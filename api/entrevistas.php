@@ -64,7 +64,7 @@ $entrevistas = [
     'pregunta2'   => '¿Qué consejos le darías a las personas que quieren estudiar cine?',
     'carrera'     => 'Pienso que deberían empezar grabando una historia cercana y sencilla de hacer: un personaje que conozcan, una anécdota que hayan visto o algo que haya ocurrido en su barrio, en su calle o en su propia vida. Después pueden explorar cómo darle forma de cortometraje.',
   ],
-];;
+];
 
 /**
  *
