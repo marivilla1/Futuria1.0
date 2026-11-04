@@ -35,7 +35,9 @@ $entrevistas = [
     'profesion'   => 'Streamer - Estudiante',
     'imagen'      => '../assets/img/stremer.jpg',
     'audio'       => '../assets/audio/ne.mp3',
-    'orientacion' => '.',
+    'pregunta1'   => '¿Cómo es crear contenido mientras estudias?',
+    'orientacion' => 'En la entrevista, Ñe comparte su experiencia como creador de contenido y estudiante.',
+    'pregunta2'   => '¿Qué tan exigente es la creación de contenido?',
     'carrera'     => 'La verdad es muy complejo, pero también trato de asimilarlo mucho con las personas que trabajan y estudian al mismo tiempo ya que la creación de contenido es como un trabajo y se le tiene que dedicar mucho tiempo para que pueda ser rentable.',
   ],
   [
