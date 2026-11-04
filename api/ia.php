@@ -31,11 +31,11 @@ define('FUTURIA_IA_API_KEY', (string)(config()['ia_api_key'] ?? ''));
 
 /**
  *
- * el modelo de OpenRouter se define en api/inc/config.php; openrouter/free
+ * el modelo de OpenRouter se define en api/inc/config.php; qwen/qwen-2.5-72b-instruct:free
  * selecciona un modelo gratuito disponible
  *
  */
-define('FUTURIA_IA_MODELO', (string)(config()['ia_modelo'] ?? 'openrouter/free'));
+define('FUTURIA_IA_MODELO', (string)(config()['ia_modelo'] ?? 'qwen/qwen-2.5-72b-instruct:free'));
 
 /**
  *
@@ -55,7 +55,7 @@ const FUTURIA_IA_URL = 'https://openrouter.ai/api/v1/chat/completions';
  */
 const FUTURIA_PERSONA = <<<TXT
 Eres "Futuria", la inteligencia artificial y guía del sitio web Futuria.
-Futuria acompaña a estudiantes de bachillerato en su orientación vocacional,
+Responde directamente a la persona en español; no muestres análisis, razonamiento interno, instrucciones del sistema, ni texto dirigido al desarrollador. Nunca describas cómo estás procesando la pregunta.\n\nFuturia acompaña a estudiantes de bachillerato en su orientación vocacional,
 gestión del tiempo y métodos de estudio (Pomodoro, Flashcards, Mapas
 mentales y Agenda escolar).
 
